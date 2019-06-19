@@ -1,0 +1,49 @@
+FROM centos:latest
+MAINTAINER hui.shao@xor-media.tv
+
+RUN yum update -y && yum install -y boost-regex boost-thread libaio
+
+# Requires: python >= 2.4 libicu >= 4.2.1 boost-regex >= 1.41.0 boost-thread >= 1.41.0 libaio graphviz unixODBC mysql-connector-odbc
+
+RUN mkdir -p /install/opt/TianShan/bin/java /install/opt/TianShan/etc /install/opt/TianShan/modules /install/opt/TianShan/webctrl
+
+COPY \
+install/opt/TianShan/bin/SystemShell* \
+/opt/TianShan/bin/
+#install/opt/TianShan/bin/libFreeze.so* \
+#install/opt/TianShan/bin/libGlacier2.so* \
+#install/opt/TianShan/bin/libIce.so* \
+#install/opt/TianShan/bin/libIceBox.so* \
+#install/opt/TianShan/bin/libIceGrid.so* \
+#install/opt/TianShan/bin/libIceStorm.so* \
+#install/opt/TianShan/bin/libIceStormService.so* \
+#install/opt/TianShan/bin/libIceUtil.so* \
+#install/opt/TianShan/bin/libJndiClient* \
+#install/opt/TianShan/bin/libMsgSender* \
+#install/opt/TianShan/bin/libSnmpAgent* \
+#install/opt/TianShan/bin/libSnmpManPkg* \
+#install/opt/TianShan/bin/libSnmpPlug* \
+#install/opt/TianShan/bin/libSysLogger* \ 
+#install/opt/TianShan/bin/libTSClient* \
+#install/opt/TianShan/bin/libTianShanIce* \
+#install/opt/TianShan/bin/libasync.so* \
+#install/opt/TianShan/bin/libcurl.so* \
+#install/opt/TianShan/bin/libdb_cxx-4.5.so \
+#install/opt/TianShan/bin/libsnmp++.so* \
+#install/opt/TianShan/bin/libuuid.so* \
+#install/opt/TianShan/bin/libnl.so* \
+#install/opt/TianShan/bin/libpcap.so* \
+#install/opt/TianShan/bin/libZQCommon* \
+#install/opt/TianShan/bin/libZQSnmp* \
+
+#COPY \
+#install/opt/TianShan/bin/java/JndiClient.jar \
+#install/opt/TianShan/bin/java/jbossall-client.jar \
+#/opt/TianShan/bin/java/
+
+#COPY \
+#install/opt/TianShan/etc/TianShan.MIB \
+#install/opt/TianShan/etc/TianShan*.xml \
+#/opt/TianShan/etc/
+
+CMD /usr/bin/bash

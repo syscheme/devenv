@@ -1,0 +1,12 @@
+FROM syscheme/zqbbox_centos:latest
+MAINTAINER hui.shao@xor-media.tv
+
+RUN rpm -e gsoap gsoap-devel
+
+ADD gsoap-2.7.10-bin.tar.bz2 /
+COPY gsoap-2.7.10 /opt/sdk/3rdPartyKits/gsoap-2.7.10/
+
+CMD /usr/bin/build.sh
+
+
+

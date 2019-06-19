@@ -1,0 +1,21 @@
+# 'docker run' this image  should include option: --user=root --cap-add=SYS_PTRACE
+
+FROM syscheme/zqbbox_centos:latest
+MAINTAINER hui.shao@xor-media.tv
+
+RUN yum install -y gdb-gdbserver strace && rm -rf /var/cache/yum
+
+RUN debuginfo-install -y boost-python boost-system boost-thread bzip2-libs cyrus-sasl-lib glibc keyutils-libs krb5-libs libcom_err libcurl libgcc libidn libselinux libssh2 libstdc++ \
+        libuuid nspr nss nss-softokn-freebl nss-util openldap openssl-libs pcre python-libs zlib \
+	&& rm -rf /var/cache/yum
+
+VOLUME /opt/TianShan
+
+EXPOSE 689
+
+COPY dbgs.sh /usr/local/bin/
+
+CMD /usr/local/bin/dbgs.sh 689
+
+
+

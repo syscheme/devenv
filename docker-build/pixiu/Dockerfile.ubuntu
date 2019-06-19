@@ -1,0 +1,19 @@
+# docker build -t syscheme/bizdata -f Dockerfile.ubuntu .
+
+FROM tensorflow/tensorflow:latest-gpu
+MAINTAINER hui.shao@xor-media.tv
+
+RUN mkdir -p /tmp/build /tmp/pip-cache
+
+# add TA-Lib
+ADD ta-lib-0.4.0-src.tar.gz /tmp/build/
+RUN cd /tmp/build/ta-lib && ./configure --prefix=/usr && make && make install && pip install --cache-dir /tmp/build/ TA-Lib && rm -rf /tmp/build/ta-lib
+
+# add TuShare
+RUN pip install --cache-dir /tmp/build/ tushare bs4 xlrd pandas
+
+RUN mkdir -p /opt /projs
+VOLUME /projs
+VOLUME /opt
+
+# CMD /usr/bin/bash
