@@ -1,0 +1,14 @@
+Pdb
+pdb
+*.txt
+*.bak
+*.BAK
+*.zip
+*.exe
+*.vcproj*
+*.sln
+*.pdb
+*.lib
+*.mak
+*.tar.?z*
+*.o
