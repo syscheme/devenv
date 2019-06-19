@@ -1,6 +1,6 @@
 sdk: # 3rdPartyKits.tar.bz2 SeaChangeKits.tar.bz2
-	mkdir -p sdk/3rdPartyKits
-	mkdir -p sdk/SeaChangeKits
+#	mkdir -p sdk/3rdPartyKits
+#	mkdir -p sdk/SeaChangeKits
 #	tar xfvj 3rdPartyKits.tar.bz2 -C sdk/3rdPartyKits
 #	tar xfvj SeaChangeKits.tar.bz2 -C sdk/SeaChangeKits
 #	tar xfvj iptc.tar.bz2
