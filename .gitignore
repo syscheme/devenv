@@ -1,0 +1,13 @@
+tmp
+logs
+out
+CachedData
+CachedExtensions
+Backups
+globalStorage
+workspaceStorage
+GPUCache
+Cache
+node_modules
+*.vsix
+.vscode-test
