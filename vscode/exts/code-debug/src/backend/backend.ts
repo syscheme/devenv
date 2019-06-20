@@ -48,9 +48,17 @@ export interface SSHArguments {
 	bootstrap: string;
 }
 
+// export interface GDBServerArguments {
+// 	endpoint: string;
+// 	executable: string;
+// 	srcRootOfBuild: string;
+// 	symbolDirs: string;
+// } 
+
 export interface IBackend {
 	load(cwd: string, target: string, procArgs: string, separateConsole: string): Thenable<any>;
 	ssh(args: SSHArguments, cwd: string, target: string, procArgs: string, separateConsole: string, attach: boolean): Thenable<any>;
+	// gdbserver(args: GDBServerArguments, cwd: string, procArgs: string, separateConsole: string, attach: boolean): Thenable<any>;
 	attach(cwd: string, executable: string, target: string): Thenable<any>;
 	connect(cwd: string, executable: string, target: string): Thenable<any>;
 	start(): Thenable<boolean>;

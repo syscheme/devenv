@@ -56,6 +56,9 @@ export class MI2 extends EventEmitter implements IBackend {
 		return new Promise((resolve, reject) => {
 			this.isSSH = false;
 			const args = this.preargs.concat(this.extraargs || []);
+			if (trace)
+			 	this.log("stderr", `loading via debugger: '${this.application}' '${args}'`);
+
 			this.process = ChildProcess.spawn(this.application, args, { cwd: cwd, env: this.procEnv });
 			this.process.stdout.on("data", this.stdout.bind(this));
 			this.process.stderr.on("data", this.stderr.bind(this));
@@ -181,6 +184,11 @@ export class MI2 extends EventEmitter implements IBackend {
 		});
 	}
 
+	// gdbserver(args: GDBServerArguments, cwd: string, procArgs: string, separateConsole: string, attach: boolean): Thenable<any> {
+	// 	// TODO
+	// 	return null;
+	// }
+	
 	protected initCommands(target: string, cwd: string, ssh: boolean = false, attach: boolean = false) {
 		if (ssh) {
 			if (!path.isAbsolute(target))
@@ -214,6 +222,9 @@ export class MI2 extends EventEmitter implements IBackend {
 				args = this.preargs;
 			} else
 				args = args.concat([executable, target], this.preargs);
+
+			if (trace)
+				this.log("stderr", `attaching via debugger: '${this.application}' '${args}'`);
 			this.process = ChildProcess.spawn(this.application, args, { cwd: cwd, env: this.procEnv });
 			this.process.stdout.on("data", this.stdout.bind(this));
 			this.process.stderr.on("data", this.stderr.bind(this));
@@ -248,6 +259,37 @@ export class MI2 extends EventEmitter implements IBackend {
 			this.process.stderr.on("data", this.stderr.bind(this));
 			this.process.on("exit", (() => { this.emit("quit"); }).bind(this));
 			this.process.on("error", ((err) => { this.emit("launcherror", err); }).bind(this));
+			
+// 			var commands = [
+// 				this.sendUserInput("set logging file gdb.log"),
+// 				this.sendUserInput("enable pretty-printer"),
+// 				this.sendCommand("gdb-set target-async on", true),
+// 				this.sendCommand("target-select extended-remote " + server.endpoint)
+// 				];
+// 
+// 			if (!isNullOrUndefined(server.srcRootOfBuild))
+// 				commands.push(this.sendUserInput("set substitute-path " + server.srcRootOfBuild + " " + localcwd));
+// 			if (!isNullOrUndefined(server.symbolDirs))
+// 				commands.push(this.sendUserInput("set debug-file-directory " + server.symbolDirs+"/bin:"+server.symbolDirs +"/.debug"));
+// 
+// 			if (trace)
+// 				commands.push(this.sendCommand("environment-pwd", true));
+// 
+// 			commands.push(this.sendUserInput("set remote exec-file " + server.executable));
+// 
+// 			//  the following 'file ' command appear unnecessary but is to skip a gdb bug to avoid:
+// 			//    ~"/build/gdb-9un5Xp/gdb-7.11.1/gdb/thread.c:982: internal-error: is_thread_state: Assertion `tp' failed.\nA problem internal to GDB has been detected,\nfurther debugging may prove unreliable.\nCreate a core file of GDB? "
+// 			//    ~"(y or n) [answered Y; input not from terminal]\n"
+// 			//  This is a bug, please report it.  For instructions, see:<http://www.gnu.org/software/gdb/bugs/>.
+// 			if (!isNullOrUndefined(server.symbolDirs))
+// 				commands.push(this.sendUserInput("file " + server.symbolDirs + server.executable)); // ??? 
+// 			else
+// 				commands.push(this.sendUserInput("file " + server.executable)); // ??? 
+// 
+// 			// commands.push(this.sendUserInput("catch throw"));
+// 			// commands.push(this.sendUserInput("break main"));
+// 			// commands.push(this.sendCommand("run"));
+
 			Promise.all([
 				this.sendCommand("gdb-set target-async on"),
 				this.sendCommand("environment-directory \"" + escape(cwd) + "\""),
@@ -733,6 +775,9 @@ export class MI2 extends EventEmitter implements IBackend {
 	}
 
 	sendUserInput(command: string, threadId: number = 0, frameLevel: number = 0): Thenable<any> {
+		if (trace)
+			this.log("usercmd", `'${command}'`);
+
 		if (command.startsWith("-")) {
 			return this.sendCommand(command.substr(1));
 		} else {
@@ -760,6 +805,9 @@ export class MI2 extends EventEmitter implements IBackend {
 
 	sendCommand(command: string, suppressFailure: boolean = false): Thenable<MINode> {
 		const sel = this.currentToken++;
+		if (trace)
+			this.log("stderr", `sendCommand: '${command}'`);
+			
 		return new Promise((resolve, reject) => {
 			this.handlers[sel] = (node: MINode) => {
 				if (node && node.resultRecords && node.resultRecords.resultClass === "error") {
