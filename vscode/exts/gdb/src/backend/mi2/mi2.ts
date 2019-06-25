@@ -1,4 +1,4 @@
-import { Breakpoint, IBackend, Thread, Stack, SSHArguments, Variable, VariableObject, MIError } from "../backend";
+import { Breakpoint, IBackend, Thread, Stack, SSHArguments, Variable, VariableObject, MIError} from "../backend";
 import * as ChildProcess from "child_process";
 import { EventEmitter } from "events";
 import { parseMI, MINode } from '../mi_parse';
@@ -9,6 +9,9 @@ import { posix } from "path";
 import * as nativePath from "path";
 const path = posix;
 import { Client } from "ssh2";
+
+import { GDBServerArguments } from '../backend';
+import { isNullOrUndefined } from 'util';
 
 export function escape(str: string) {
 	return str.replace(/\\/g, "\\\\").replace(/"/g, "\\\"");
@@ -24,7 +27,7 @@ function couldBeOutput(line: string) {
 	return true;
 }
 
-const trace = false;
+const trace = true;
 
 export class MI2 extends EventEmitter implements IBackend {
 	constructor(public application: string, public preargs: string[], public extraargs: string[], procEnv: any) {
@@ -57,7 +60,7 @@ export class MI2 extends EventEmitter implements IBackend {
 			this.isSSH = false;
 			const args = this.preargs.concat(this.extraargs || []);
 			if (trace)
-			 	this.log("stderr", `loading via debugger: '${this.application}' '${args}'`);
+				this.log("stderr", `loading via debugger: '${this.application}' '${args}'`);
 
 			this.process = ChildProcess.spawn(this.application, args, { cwd: cwd, env: this.procEnv });
 			this.process.stdout.on("data", this.stdout.bind(this));
@@ -188,7 +191,7 @@ export class MI2 extends EventEmitter implements IBackend {
 	// 	// TODO
 	// 	return null;
 	// }
-	
+
 	protected initCommands(target: string, cwd: string, ssh: boolean = false, attach: boolean = false) {
 		if (ssh) {
 			if (!path.isAbsolute(target))
@@ -245,56 +248,66 @@ export class MI2 extends EventEmitter implements IBackend {
 		});
 	}
 
-	connect(cwd: string, executable: string, target: string): Thenable<any> {
+	connect(localcwd: string, localexec: string, server: GDBServerArguments): Thenable<any> {
 		return new Promise((resolve, reject) => {
 			let args = [];
-			if (executable && !nativePath.isAbsolute(executable))
-				executable = nativePath.join(cwd, executable);
-			if (executable)
-				args = args.concat([executable], this.preargs);
+			if (localexec && !nativePath.isAbsolute(localexec))
+				localexec = nativePath.join(localcwd, localexec);
+			if (localexec)
+				args = args.concat([localexec], this.preargs);
 			else
 				args = this.preargs;
-			this.process = ChildProcess.spawn(this.application, args, { cwd: cwd, env: this.procEnv });
+
+			if (trace)
+				this.log("stderr", `spawning debugger: '${this.application}' '${args}'`);
+			this.process = ChildProcess.spawn(this.application, args, { cwd: localexec, env: this.procEnv });
 			this.process.stdout.on("data", this.stdout.bind(this));
 			this.process.stderr.on("data", this.stderr.bind(this));
 			this.process.on("exit", (() => { this.emit("quit"); }).bind(this));
 			this.process.on("error", ((err) => { this.emit("launcherror", err); }).bind(this));
-			
-// 			var commands = [
-// 				this.sendUserInput("set logging file gdb.log"),
-// 				this.sendUserInput("enable pretty-printer"),
-// 				this.sendCommand("gdb-set target-async on", true),
-// 				this.sendCommand("target-select extended-remote " + server.endpoint)
-// 				];
-// 
-// 			if (!isNullOrUndefined(server.srcRootOfBuild))
-// 				commands.push(this.sendUserInput("set substitute-path " + server.srcRootOfBuild + " " + localcwd));
-// 			if (!isNullOrUndefined(server.symbolDirs))
-// 				commands.push(this.sendUserInput("set debug-file-directory " + server.symbolDirs+"/bin:"+server.symbolDirs +"/.debug"));
-// 
-// 			if (trace)
-// 				commands.push(this.sendCommand("environment-pwd", true));
-// 
-// 			commands.push(this.sendUserInput("set remote exec-file " + server.executable));
-// 
-// 			//  the following 'file ' command appear unnecessary but is to skip a gdb bug to avoid:
-// 			//    ~"/build/gdb-9un5Xp/gdb-7.11.1/gdb/thread.c:982: internal-error: is_thread_state: Assertion `tp' failed.\nA problem internal to GDB has been detected,\nfurther debugging may prove unreliable.\nCreate a core file of GDB? "
-// 			//    ~"(y or n) [answered Y; input not from terminal]\n"
-// 			//  This is a bug, please report it.  For instructions, see:<http://www.gnu.org/software/gdb/bugs/>.
-// 			if (!isNullOrUndefined(server.symbolDirs))
-// 				commands.push(this.sendUserInput("file " + server.symbolDirs + server.executable)); // ??? 
-// 			else
-// 				commands.push(this.sendUserInput("file " + server.executable)); // ??? 
-// 
-// 			// commands.push(this.sendUserInput("catch throw"));
-// 			// commands.push(this.sendUserInput("break main"));
-// 			// commands.push(this.sendCommand("run"));
 
-			Promise.all([
-				this.sendCommand("gdb-set target-async on"),
-				this.sendCommand("environment-directory \"" + escape(cwd) + "\""),
-				this.sendCommand("target-select remote " + target)
-			]).then(() => {
+			//ORIGN: Promise.all([
+			// 	this.sendCommand("gdb-set target-async on"),
+			// 	this.sendCommand("environment-directory \"" + escape(cwd) + "\""),
+			// 	this.sendCommand("target-select remote " + target)
+			// ]).then(() => {
+			// 	this.emit("debug-ready");
+			// 	resolve();
+			// }, reject);
+
+			const commands = [
+				this.sendUserInput("set logging file gdb.log"),
+				this.sendUserInput("enable pretty-printer"),
+				this.sendCommand("gdb-set target-async on", true),
+				this.sendCommand("target-select extended-remote " + server.endpoint)
+			];
+
+			if (!isNullOrUndefined(server.srcRootOfBuild))
+				commands.push(this.sendUserInput("set substitute-path " + server.srcRootOfBuild + " " + localcwd));
+			if (!isNullOrUndefined(server.symbolDirs))
+				commands.push(this.sendUserInput("set debug-file-directory " + server.symbolDirs + "/bin:" + server.symbolDirs + "/.debug"));
+
+			if (trace)
+				commands.push(this.sendCommand("environment-pwd", true));
+
+			const remoteexec = server.executable;
+			// if (server.cwd)
+			// 	remoteexec = server.cwd + remoteexec;
+			commands.push(this.sendUserInput("set remote exec-file " + remoteexec));
+
+			//  the following 'file ' command appear unnecessary but is to skip a gdb bug to avoid:
+			//    ~"/build/gdb-9un5Xp/gdb-7.11.1/gdb/thread.c:982: internal-error: is_thread_state: Assertion `tp' failed.\nA problem internal to GDB has been detected,\nfurther debugging may prove unreliable.\nCreate a core file of GDB? "
+			//    ~"(y or n) [answered Y; input not from terminal]\n"
+			//  This is a bug, please report it.  For instructions, see:<http://www.gnu.org/software/gdb/bugs/>.
+			// if (!isNullOrUndefined(server.symbolDirs))
+			//	commands.push(this.sendUserInput("file " + server.symbolDirs + server.executable)); // ???
+			//else
+			//	commands.push(this.sendUserInput("file " + server.executable)); // ???
+
+			// commands.push(this.sendUserInput("catch throw"));
+			// commands.push(this.sendUserInput("break main"));
+			// commands.push(this.sendCommand("run"));
+			Promise.all(commands).then(() => {
 				this.emit("debug-ready");
 				resolve();
 			}, reject);
@@ -807,7 +820,7 @@ export class MI2 extends EventEmitter implements IBackend {
 		const sel = this.currentToken++;
 		if (trace)
 			this.log("stderr", `sendCommand: '${command}'`);
-			
+
 		return new Promise((resolve, reject) => {
 			this.handlers[sel] = (node: MINode) => {
 				if (node && node.resultRecords && node.resultRecords.resultClass === "error") {

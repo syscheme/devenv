@@ -2,9 +2,8 @@ import { MI2DebugSession } from './mibase';
 import { DebugSession, InitializedEvent, TerminatedEvent, StoppedEvent, OutputEvent, Thread, StackFrame, Scope, Source, Handles } from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { MI2 } from "./backend/mi2/mi2";
-import { SSHArguments, ValuesFormattingMode } from './backend/backend';
-// import { SSHArguments, GDBServerArguments, ValuesFormattingMode } from './backend/backend';
-// import { isNullOrUndefined } from 'util';
+import { SSHArguments, GDBServerArguments, ValuesFormattingMode } from './backend/backend';
+import { isNullOrUndefined } from 'util';
 
 export interface LaunchRequestArguments extends DebugProtocol.LaunchRequestArguments {
 	cwd: string;
@@ -31,7 +30,7 @@ export interface AttachRequestArguments extends DebugProtocol.AttachRequestArgum
 	remote: boolean;
 	autorun: string[];
 	ssh: SSHArguments;
-// 	gdbserver: GDBServerArguments;
+	gdbserver: GDBServerArguments;
 	valuesFormatting: ValuesFormattingMode;
 	printCalls: boolean;
 	showDevDebugOutput: boolean;
@@ -118,60 +117,60 @@ class GDBDebugSession extends MI2DebugSession {
 		}
 	}
 
-//	log(type: string, msg: string) {
-//		this.emit("msg", type, msg[msg.length - 1] == '\n' ? msg : (msg + "\n"));
-//	}
-//
-//	private replaceVar(strc, name :string, value :string) :boolean {
-//		if (isNullOrUndefined(name) || isNullOrUndefined(value) || isNullOrUndefined(strc.str))
-//			return false;
-//
-//		var newstr= (strc.str.split('${' + name + '}').join(value));
-//		var ret = (newstr != strc.str);
-//		strc.str = newstr;
-//		return ret;
-//	}
-//
-//	protected applyEnvVars(args: AttachRequestArguments) : void {
-//		if (isNullOrUndefined(args.env))
-//			return;
-//
-//		this.log("INFO", `applyEnvVars`);
-//		var finished = false;
-//		while (!finished) {
-//			finished = true;
-//
-//			for (var v in args.env) {
-//				this.log("INFO", `var[${v}]=${args.env[v]} ...`);
-//				var strc = {str:""};
-//				strc.str =args.cwd; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.cwd=strc.str;}
-//				strc.str =args.target; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.target=strc.str;}
-//				strc.str =args.gdbpath; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.gdbpath=strc.str;}
-//				strc.str =args.executable; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.executable=strc.str;}
-//
-//				if (args.gdbserver != undefined) {
-//					strc.str =args.gdbserver.endpoint; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.gdbserver.endpoint=strc.str;}
-//					strc.str =args.gdbserver.executable; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.gdbserver.executable=strc.str;}
-//					strc.str =args.gdbserver.srcRootOfBuild; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.gdbserver.srcRootOfBuild=strc.str;}
-//					strc.str =args.gdbserver.symbolDirs; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.gdbserver.symbolDirs=strc.str;}
-//				}
-//
-//				if (args.autorun != undefined) {
-//					for (var i = 0; i < args.autorun.length; i++) {
-//						strc.str =args.autorun[i]; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.autorun[i]=strc.str;}
-//					}
-//				}
-//
-//				if (!finished)
-//					this.log("INFO", `var[${v}]=${args.env[v]} applied`);
-//			};
-//
-//		}
-//	}
+	log(type: string, msg: string) {
+		this.emit("msg", type, msg[msg.length - 1] == '\n' ? msg : (msg + "\n"));
+	}
+
+	private replaceVar(strc, name: string, value: string): boolean {
+		if (isNullOrUndefined(name) || isNullOrUndefined(value) || isNullOrUndefined(strc.str))
+			return false;
+
+		const newstr = (strc.str.split('${' + name + '}').join(value));
+		const ret = (newstr != strc.str);
+		strc.str = newstr;
+		return ret;
+	}
+
+	protected applyEnvVars(args: AttachRequestArguments): void {
+		if (isNullOrUndefined(args.env))
+			return;
+
+		this.log("INFO", `applyEnvVars`);
+		let finished = false;
+		while (!finished) {
+			finished = true;
+
+			for (const v of Object.keys(args.env)) {
+				this.log("INFO", `var[${v}]=${args.env[v]} ...`);
+				const strc = {str: ""};
+				strc.str = args.cwd; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.cwd = strc.str; }
+				strc.str = args.target; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.target = strc.str; }
+				strc.str = args.gdbpath; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.gdbpath = strc.str; }
+				strc.str = args.executable; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.executable = strc.str; }
+
+				if (args.gdbserver != undefined) {
+					strc.str = args.gdbserver.endpoint; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.gdbserver.endpoint = strc.str; }
+					strc.str = args.gdbserver.executable; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.gdbserver.executable = strc.str; }
+					strc.str = args.gdbserver.srcRootOfBuild; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.gdbserver.srcRootOfBuild = strc.str; }
+					strc.str = args.gdbserver.symbolDirs; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.gdbserver.symbolDirs = strc.str; }
+				}
+
+				if (args.autorun != undefined) {
+					for (let i = 0; i < args.autorun.length; i++) {
+						strc.str = args.autorun[i]; if (this.replaceVar(strc, v, args.env[v])) {finished = false; args.autorun[i] = strc.str; }
+					}
+				}
+
+				if (!finished)
+					this.log("INFO", `var[${v}]=${args.env[v]} applied`);
+			}
+
+		}
+	}
 
 	protected attachRequest(response: DebugProtocol.AttachResponse, args: AttachRequestArguments): void {
 
-//		this.applyEnvVars(args);
+		this.applyEnvVars(args);
 
 		this.miDebugger = new MI2(args.gdbpath || "gdb", ["-q", "--interpreter=mi2"], args.debugger_args, args.env);
 		this.initDebugger();
@@ -183,6 +182,7 @@ class GDBDebugSession extends MI2DebugSession {
 		this.setValuesFormattingMode(args.valuesFormatting);
 		this.miDebugger.printCalls = !!args.printCalls;
 		this.miDebugger.debugOutput = !!args.showDevDebugOutput;
+
 		if (args.ssh !== undefined) {
 			if (args.ssh.forwardX11 === undefined)
 				args.ssh.forwardX11 = true;
@@ -210,40 +210,41 @@ class GDBDebugSession extends MI2DebugSession {
 				this.sendErrorResponse(response, 102, `Failed to SSH: ${err.toString()}`);
 			});
 		} else {
-//			if (args.gdbserver != undefined) {
-//				if (isNullOrUndefined(args.gdbserver.endpoint))
-//					args.gdbserver.endpoint =args.target;
-//
-//				if (isNullOrUndefined(args.gdbserver.executable))
-//					args.gdbserver.executable =args.executable;
-//
-//				this.miDebugger.connect(args.cwd, args.gdbserver).then(() => {
-//					this.log("INFO", `server connected: '${args.gdbserver}'`);
-//
-//					if (isNullOrUndefined(args.autorun))
-//						args.autorun =[];
-//
-//					args.autorun.push("break main");
-//					args.autorun.push("catch throw");
-//					args.autorun.push("run");
-//
-//					args.autorun.forEach(command => { this.miDebugger.sendUserInput(command); });
-//					this.sendResponse(response);
-//				}, err => {
-//					this.sendErrorResponse(response, 102, `Failed to attach: ${err.toString()}`);
-//				});
-//			} else
-//
-			if (args.remote) {
-				this.miDebugger.connect(args.cwd, args.executable, args.target).then(() => {
-					if (args.autorun)
-						args.autorun.forEach(command => {
-							this.miDebugger.sendUserInput(command);
-						});
+
+			// if (args.remote) {
+			// 	this.miDebugger.connect(args.cwd, args.executable, args.target).then(() => {
+			// 		if (args.autorun)
+			// 			args.autorun.forEach(command => {
+			// 				this.miDebugger.sendUserInput(command);
+			// 			});
+			// 		this.sendResponse(response);
+			// 	}, err => {
+			// 		this.sendErrorResponse(response, 102, `Failed to attach: ${err.toString()}`);
+			// 	});
+
+			if (args.gdbserver != undefined) {
+				if (isNullOrUndefined(args.gdbserver.endpoint))
+					args.gdbserver.endpoint = args.target;
+
+				if (isNullOrUndefined(args.gdbserver.executable))
+					args.gdbserver.executable = args.executable;
+
+				this.miDebugger.connect(args.cwd, args.executable, args.gdbserver).then(() => {
+					this.log("INFO", `server connected: '${args.gdbserver}'`);
+
+					if (isNullOrUndefined(args.autorun))
+						args.autorun = [];
+
+					args.autorun.push("break main");
+					args.autorun.push("catch throw");
+					args.autorun.push("run");
+
+					args.autorun.forEach(command => { this.miDebugger.sendUserInput(command); });
 					this.sendResponse(response);
 				}, err => {
 					this.sendErrorResponse(response, 102, `Failed to attach: ${err.toString()}`);
 				});
+
 			} else {
 				this.miDebugger.attach(args.cwd, args.executable, args.target).then(() => {
 					if (args.autorun)
