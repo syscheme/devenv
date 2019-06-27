@@ -1,0 +1,212 @@
+   59  hostname
+   60  sysctl  -a |grep localhost
+   61  sysctl -w kernel.hostname=c7.hyper1920h.se1.xor-media.tv
+   62  nano /etc/sysctl.conf 
+   87  systemctl stop firewall
+   88  systemctl stop firewalld
+   89  systemctl stop iptables
+   90  systemctl disable iptables
+   91  systemctl disable firewalld
+
+yum install -y ant bison cpp dos2unix flex gcc gcc-c++ gdb git glibc glibc-devel glib-networking make rpm-build libasan bzip2-devel zlib-devel     boost-devel boost-regex expat fuse-devel graphite2 iptable-devel java-1.7.0-openjdk-devel libicu openssl openssl-devel net-snmp-devel net-snmp-libs libnl libnl3 unixODBC unixODBC-devel mysql-connector-odbc libdb-devel libdb-cxx-devel python-devel libiptc libmnl
+
+yum install -y gdb-gdbserver strace perf debuginfo-install -y boost-python boost-system boost-thread bzip2-libs cyrus-sasl-lib glibc keyutils-libs krb5-libs libcom_err libcurl libgcc libidn libselinux libssh2 libstdc++         libuuid nspr nss nss-softokn-freebl nss-util openldap openssl-libs pcre python-libs zlib libasan libtasan
+
+yum install -y libasan libtasan libasan-static libtasan-static
+
+rm -rf /var/cache/yum
+
+debuginfo-install -y boost-python boost-system boost-thread bzip2-libs cyrus-sasl-lib glibc keyutils-libs krb5-libs libcom_err libcurl libgcc libidn libselinux libssh2 libstdc++         libuuid nspr nss nss-softokn-freebl nss-util openldap openssl-libs pcre python-libs zlib
+
+ssh-keygen -t rsa
+cat ~/.ssh/id_rsa.pub 
+
+mkdir wkspaces
+cd wkspaces/
+git clone git@github.com:syscheme/devenv.git
+
+mkdir tmp
+cd tmp/
+cat > hello.c
+gcc -g -o a.out hello.c 
+./a.out 
+
+   83  /usr/bin/gdbserver --once --debug --multi 0:2345
+   84  ifconfig
+  108  pkill gdbserver
+  111  gdb --interpreter=mi2
+
+  135  yum install -y npm
+
+  193  npm install -g concurrently
+  194  npm install -g lite-server
+
+  133  cd vscode/exts/gdb/
+  134  npm install
+  136  yum search npm
+  137  yum search node
+  138  yum search chrome
+  139  yum search chrom
+  140  yum search firefox
+  141  yum install -y firefox
+  142  yum install epel-release
+  143  curl --silent --location https://rpm.nodesource.com/setup_8.x |bash -
+  144  yum install nodejs
+  145  yum install -y nodejs
+  146  pwd
+  147  npm install 
+  148  tsc -p .
+  149  npm install 
+  150  npm remove debug
+  151  npm install 
+  152  npm list
+  153  npm list|grep debug
+  154  npm remove debug@3.2.6
+  155  npm list|grep debug
+  156  npm delete debug@3.2.6
+  157  npm remove debug
+  158  npm list|grep debug
+  159  npm install 
+  160  npm install typescript
+  161  tsc
+  162  npm remove debug
+  163  npm install -g
+  164  npm update
+  165  npm update -g
+  166  npm install
+  167  npm update
+  168  npm install
+  169  ls
+  170  tsc
+  171  npm install tsc
+  172  tsc -p .
+  173  npm install typescript
+  174  tsc -p .
+  175  npm install
+  176  grep postinstall package.json 
+  177  node ./node_modules/vscode/bin/install
+  178  npm install
+  179  npm install --unsafe-perm
+  180  tsc -p .
+  181  vi package.json 
+  182  grep config package.json 
+  183  gedit package.json 
+  184  npm install
+  185  npm install --unsafe-perm
+  186  npm install --unsafe-perm typescript
+  187  tsc
+  188  npm install --unsafe-perm tsc
+  189  npm install -g --unsafe-perm tsc
+  190  tsc
+  191  tsc -p .
+  192  npm install -g concurrently lite-server typescript
+  195  history |grep gdb
+  196  pwd
+  197  cd ~/wkspaces/tmp/
+  198  /usr/bin/gdbserver --once --debug --multi 0:2345
+  199  ifconfig
+  200  /usr/bin/gdbserver --once --debug --multi 0:2345
+  201  ls
+  202  /usr/bin/gdbserver --once --debug --multi 0:2345
+  203  gdb a.out
+  204  /usr/bin/gdbserver --once --debug --multi 0:2345
+  205  gdbserver --help
+  206  /usr/bin/gdbserver --once --debug --multi 0:2345
+  207  gdbserver --version
+  208  gdb --version
+  209  ls
+  210  cd
+  211  ls
+  212  cd wkspaces/
+  213  ls
+  214  cd devenv/
+  215  git pull
+  216  git diff
+  217  ls
+  218  cd vscode/
+  219  ls
+  220  cd exts/
+  221  ls
+  222  cd gdb/
+  223  code .
+  224  yum install -y code
+  225  rpm --import https://packages.microsoft.com/keys/microsoft.asc
+  226  yum update
+  227  gedit /etc/yum.repos.d/vscode.repo
+  228  yum install cod3e
+  229  yum install code
+  230  npm
+  231  ls
+  232  code .
+  233  code --user-data-dir ~ .
+  234  git status
+  235  git pull
+  236  npm install
+  237  tsc -p .
+  238  tsc --version
+  239  npm update
+  240  tsc --version
+  241  npm update
+  242  npm update typescript
+  243  tsc --version
+  244  npm upgrade
+  245  tsc --versio
+  246  tsc --version
+  247  npm update nmp
+  248  npm update npm
+  249  npm update -g
+  250  npm upgrade -g
+  251   npm install -g npm-check-updates 
+  252  npm outdated
+  253  npm update
+  254* npm  -g
+  255  ncu
+  256  ncu -u
+  257  npm install
+  258  npm install -g
+  259  ncu -u node
+  260  ncu -u
+  261  npm install
+  262  tsc -p .
+  263  git pull
+  264  npm install
+  265  npm install -f
+  266  grep postinstall package.json 
+  267  ls -l ./node_modules/vscode/bin/install
+  268  cat ./node_modules/vscode/bin/install
+  269  ls
+  270  npm install -g 
+  271  ncu -ua
+  272  ncu -a
+  273  ncu
+  274  npm install
+  275  npm install --unsafe-perm
+  276  tsc -p .
+  277  npm update tsc
+  278  tsc -p .
+  279  npm upgrade tsc
+  280  tsc -p .
+  281  gedit package
+  282  gedit package.json 
+  283  npm install
+  284  git diff
+  285  dos2unix package.json 
+  286  git diff
+  287  git diff package.json 
+  288  dos2unix package.json 
+  289  git diff package.json 
+  290  unix2dos package.json 
+  291  git diff package.json 
+  292  gedit package.json 
+  293  git diff package.json 
+  294  npm install
+  295  gedit package.json 
+  296  npm install
+  297  npm install --unsafe-perm
+  298  npm list
+  299  npm list|grep typescript
+  300  tsc --version
+  301  tsc -p .
+  302  npm install --global typescript@latest
+  303  tsc -p .
+  304  history > centos7_INSTALL.txt
