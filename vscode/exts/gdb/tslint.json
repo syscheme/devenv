@@ -33,6 +33,7 @@
 		"radix": false,
 		"space-before-function-paren": false,
 		"trailing-comma": false,
-		"triple-equals": false
+		"triple-equals": false,
+		"no-console": false
 	}
 }

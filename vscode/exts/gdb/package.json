@@ -953,9 +953,9 @@
 		]
 	},
 	"scripts": {
-		"compile": "tsc -p ./src",
+		"compile": "tsc -p .",
 		"tslint": "tslint ./src/**/*.ts",
-		"watch": "tsc -w -p ./src",
+		"watch": "tsc -w -p .",
 		"test": "mocha -u tdd ./out/tests/",
 		"postinstall": "node ./node_modules/vscode/bin/install",
 		"package": "vsce package",
