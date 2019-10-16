@@ -1,0 +1,13 @@
+<TianShan>
+    <Definitions src="TianShanDef.xml" />
+
+    <IndexDB url="redis://${ContainerHostIP}" pageSize="10m" ttl="0s" errTTL="4s"/>
+    <IndexService netId="${HostNetID}" logInterval="30000" eloopAffiniteCore="-1" queryTimeout="5000" >
+        <Bind endpoint="http://${ServerNetIf}:5000/" ioDump="0" />
+        <ContentSource responseTimeout="10s" ttlPWE="5s" contentNameExp="${PAID}_${PID}" >
+                <Volume uri="/IndexSearch/.*" enable="1" srcUrl="ngodc2://10.8.8.42:10080/${ContentName}.${SubType}?speedupRate=0.1&amp;clienTransfer=${ServerNetIf}&amp;defaultgetport=12000" transferRate="20000000" transferRatePWE="100000"/>
+                <Volume uri="/IndexSearch" enable="1" srcUrl="ngodc2://10.8.8.42:10080/${ContentName}.${SubType}?speedupRate=0.1&amp;clienTransfer=${ServerNetIf}&amp;defaultgetport=12000" transferRate="20000000" transferRatePWE="100000"/>
+		<Volume uri="/UML840/.*" enable="0" srcUrl="ngodc2://10.8.8.42:10080/${ContentName}.${SubType}?speedupRate=0.1&amp;clienTransfer=${ServerNetIf}&amp;defaultgetport=12000" transferRate="20000000" transferRatePWE="100000"/>
+        </ContentSource>
+    </IndexService>
+</TianShan>

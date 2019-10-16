@@ -28,5 +28,13 @@ common:
 		opt/TianShan/bin/libZQSnmp*
 
 docker: common
-	docker build -t syscheme/TianShan-common TianShan-common.dkr .
+	docker build -t syscheme/tianshan-common -f TianShan-common.dkr .
+
+tsinstall:
+	yum localinstall -y ./TianShan-*.rpm
+	rm -rf /opt/TianShan/{logs,data}
+	tar cfvj ts.tar.bz2 /opt/TianShan
+
+docker-idx: tsinstall
+	docker build -t syscheme/tianshan-idxsvc -f TianShan-indexsvc.dkr .
 
