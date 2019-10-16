@@ -10,10 +10,10 @@ RUN yum install -y java-1.7.0-openjdk python && \
 
 # yum install -y  libXaw
 
+# VOLUME ['/data', '/logs']
 VOLUME /data
-VOLUME /logs
 
-RUN mkdir -p /opt/TianShan && ln -sf /data /opt/TianShan/data && ln -sf /logs /opt/TianShan/logs
+RUN mkdir -p /data/db /data/logs && mkdir -p /opt/TianShan && ln -sf /data/db /opt/TianShan/data && ln -sf /data/logs /opt/TianShan/logs
 
 ADD ts.tar.bz2 /
 COPY start_IndexSvc.sh /usr/bin/

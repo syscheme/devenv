@@ -1,4 +1,5 @@
 #!/bin/bash
+mkdir -p /data/db /data/logs
 
 ETH0_IP=$(/sbin/ip address|grep 'scope global eth0'|awk '{print $2;}'|cut -d '/' -f 1)
 HOST_IP=$(/sbin/ip route|awk '{ print $3 }'|head -1)
