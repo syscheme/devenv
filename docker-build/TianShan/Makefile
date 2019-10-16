@@ -32,7 +32,8 @@ docker: common
 
 tsinstall:
 	yum localinstall -y ./TianShan-*.rpm
-	rm -rf /opt/TianShan/{logs,data}
+	rm -rf etc; mv /opt/TianShan/etc .
+	rm -rf /opt/TianShan/{logs,data,etc}
 	tar cfvj ts.tar.bz2 /opt/TianShan
 
 docker-idx: tsinstall

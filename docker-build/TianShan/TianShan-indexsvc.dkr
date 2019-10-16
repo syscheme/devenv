@@ -19,5 +19,5 @@ ADD ts.tar.bz2 /
 COPY start_IndexSvc.sh /usr/bin/
 COPY TianShanDef.xml /opt/TianShan/etc/
 COPY IndexSvc.xml /opt/TianShan/etc/
-
-CMD /usr/bin/bash
+COPY etc/TianShan_sample.xml /etc/TianShan.xml
+CMD /usr/bin/start_IndexSvc.sh
