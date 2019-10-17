@@ -36,6 +36,6 @@ tsinstall:
 	cp -f /opt/TianShan/etc/TianShanDef_sample.xml /opt/TianShan/etc/TianShanDef.xml
 
 docker-idx: tsinstall
-	./build_tstar.sh "IndexSvc"
+	./build_tstar.sh "IndexSvc" "IndexSvc"
 	docker build -t syscheme/tianshan-idxsvc -f TianShan-indexsvc.dkr .
 

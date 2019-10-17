@@ -1,6 +1,7 @@
 #!/bin/bash
-BINFILES=$1
-MODULEFILES=$2
+XMLFILES="TianShan TianShanDef $1"
+BINFILES=$2
+MODULEFILES=$3
 
 echo > binlist.txt;
 for i in ${BINFILES} ; do
@@ -16,7 +17,21 @@ for i in ${MODULEFILES} ; do
 done
 
 FILELIST=$(sed -e 's/\/\.\//\//g' binlist.txt | sed 's/\/\.\//\//g' | sed 's/\/modules\/\.\.\/bin\//\/bin\//g' | uniq)
-FILELIST+=" /opt/TianShan/etc/TianShan.xml /opt/TianShan/etc/TianShanDef.xml"
+
+mkdir -p /opt/TianShan/etc_dk
+cp -f ./TianShanDef.xml /opt/TianShan/etc_dk/
+for i in ${XMLFILES} ; do
+    if [ -e "./${i}.xml" ] ; then cp -f ./${i}.xml /opt/TianShan/etc_dk/ ; fi
+    if ! [ -e "/opt/TianShan/etc_dk/${i}.xml" ] ; then cp /opt/TianShan/etc/${i}_sample.xml /opt/TianShan/etc_dk/${i}.xml ; fi
+    FILELIST+=" /opt/TianShan/etc_dk/${i}.xml"
+done
 
 rm -rf ts.tar.bz2
 tar cfvj ts.tar.bz2 ${FILELIST}
+
+# not sure why docker-build complain the above tar file, just extract and repack
+rm -rf aaa; mkdir -p aaa ; cd aaa
+tar xfvj ../ts.tar.bz2
+tar cfvj ../ts.tar.bz2 .
+cd ..; rm -rf aaa
+ 
