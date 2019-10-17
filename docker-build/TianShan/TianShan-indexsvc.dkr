@@ -1,3 +1,5 @@
+# example command to launch: docker run --privileged -it -v /path-to-container-ctx/indexsvc:/data 10.50.3.199:5000/tianshan/indexsvc:v3.6.1.1
+
 FROM centos:centos7.5.1804
 MAINTAINER hui.shao@xor-media.tv
 
@@ -13,7 +15,7 @@ RUN yum install -y java-1.7.0-openjdk python && \
 # VOLUME ['/data', '/logs']
 VOLUME /data
 
-RUN mkdir -p /data/db /data/logs && mkdir -p /opt/TianShan && ln -sf /data/db /opt/TianShan/data && ln -sf /data/logs /opt/TianShan/logs
+RUN mkdir -p /data/db /data/logs && mkdir -p /opt/TianShan && ln -sf /data/db /opt/TianShan/data && ln -sf /data/logs /opt/TianShan/logs && ln -sf /data/etc /opt/TianShan/etc
 
 ADD ts.tar.bz2 /
 COPY start_IndexSvc.sh /usr/bin/

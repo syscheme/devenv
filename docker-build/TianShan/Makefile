@@ -32,10 +32,10 @@ docker: common
 
 tsinstall:
 	yum localinstall -y ./TianShan-*.rpm
-	rm -rf etc; mv /opt/TianShan/etc .
-	rm -rf /opt/TianShan/{logs,data,etc}
-	tar cfvj ts.tar.bz2 /opt/TianShan
+	cp -f /opt/TianShan/etc/TianShan_sample.xml /opt/TianShan/etc/TianShan.xml
+	cp -f /opt/TianShan/etc/TianShanDef_sample.xml /opt/TianShan/etc/TianShanDef.xml
 
 docker-idx: tsinstall
+	./build_tstar.sh "IndexSvc"
 	docker build -t syscheme/tianshan-idxsvc -f TianShan-indexsvc.dkr .
 
