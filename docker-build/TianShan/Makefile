@@ -38,4 +38,6 @@ tsinstall:
 docker-idx: tsinstall
 	./build_tstar.sh "IndexSvc" "IndexSvc"
 	docker build -t syscheme/tianshan-idxsvc -f TianShan-indexsvc.dkr .
+	docker tag syscheme/tianshan-idxsvc:latest repo.xor:5000/tianshan/indexsvc:v3.6
+	docker push repo.xor:5000/tianshan/indexsvc:v3.6
 
