@@ -1,3 +1,4 @@
+BUILDNUM :=$(shell ls /opt/TianShan/bin/IndexSvc.* | grep IndexSvc | cut -d "/" -f 5 | cut -c10-)
 common: 
 	tar cfvj common.tar.bz2 \
 		opt/TianShan/bin/SystemShell* \
@@ -37,7 +38,10 @@ tsinstall:
 
 docker-idx: tsinstall
 	./build_tstar.sh "IndexSvc" "IndexSvc"
+	@echo aaa=${BUILDNUM}
 	docker build -t syscheme/tianshan-idxsvc -f TianShan-indexsvc.dkr .
-	docker tag syscheme/tianshan-idxsvc:latest repo.xor:5000/tianshan/indexsvc:v3.6
+	docker tag syscheme/tianshan-idxsvc:latest repo.xor:5000/tianshan/indexsvc:v${BUILDNUM}
+	docker tag repo.xor:5000/tianshan/indexsvc:v$(BUILDNUM) repo.xor:5000/tianshan/indexsvc:v3.6
+	docker push repo.xor:5000/tianshan/indexsvc:v$(BUILDNUM)
 	docker push repo.xor:5000/tianshan/indexsvc:v3.6
 
