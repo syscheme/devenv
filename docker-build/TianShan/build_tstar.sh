@@ -42,3 +42,4 @@ tar cfvj ../ts.tar.bz2 .
 cd ..; rm -rf aaa
  
 export BUILDNUM=$(basename $(realpath /opt/TianShan/bin/libZQCommon.so) | sed 's/^.*\.so[\.]*//g')
+export BRANCHNUM=$(echo ${BUILDNUM} | cut -d '.' -f 1,2)
