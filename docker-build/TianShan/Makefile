@@ -1,6 +1,6 @@
-BUILDNUM :=$(shell ls /opt/TianShan/bin/IndexSvc.* | grep IndexSvc | cut -d "/" -f 5 | cut -c10-)
+BUILDNUM :=$(shell basename $(shell realpath /opt/TianShan/bin/libZQCommon.so) | sed 's/^.*\.so[\.]*//g')
 common: 
-	tar cfvj common.tar.bz2 \
+	tar cfmvj common.tar.bz2 \
 		opt/TianShan/bin/SystemShell* \
 		opt/TianShan/bin/libFreeze.so* \
 		opt/TianShan/bin/libGlacier2.so* \
@@ -15,12 +15,12 @@ common:
 		opt/TianShan/bin/libSnmpAgent* \
 		opt/TianShan/bin/libSnmpManPkg* \
 		opt/TianShan/bin/libSnmpPlug* \
-		opt/TianShan/bin/libSysLogger* \ 
+		opt/TianShan/bin/libSysLogger* \
 		opt/TianShan/bin/libTSClient* \
 		opt/TianShan/bin/libTianShanIce* \
 		opt/TianShan/bin/libasync.so* \
 		opt/TianShan/bin/libcurl.so* \
-		opt/TianShan/bin/libdb_cxx-4.5.so \
+		opt/TianShan/bin/libdb_cxx-4.8.so \
 		opt/TianShan/bin/libsnmp++.so* \
 		opt/TianShan/bin/libuuid.so* \
 		opt/TianShan/bin/libnl.so* \
@@ -38,7 +38,8 @@ tsinstall:
 
 docker-idx: tsinstall
 	./build_tstar.sh "IndexSvc" "IndexSvc"
-	@echo aaa=${BUILDNUM}
+	# export BUILDNUM=$(shell basename $(shell realpath /opt/TianShan/bin/libZQCommon.so) | sed 's/^.*\.so[\.]*//g')
+	@echo aaa=$(BUILDNUM)
 	docker build -t syscheme/tianshan-idxsvc -f TianShan-indexsvc.dkr .
 	docker tag syscheme/tianshan-idxsvc:latest repo.xor:5000/tianshan/indexsvc:v${BUILDNUM}
 	docker tag repo.xor:5000/tianshan/indexsvc:v$(BUILDNUM) repo.xor:5000/tianshan/indexsvc:v3.6

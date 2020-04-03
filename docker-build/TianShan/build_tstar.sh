@@ -8,6 +8,12 @@ for i in ${BINFILES} ; do
     FILE="/opt/TianShan/bin/${i}*"
     echo "$FILE" >>  binlist.txt
     ldd $FILE | grep '=> /opt/TianShan' |  awk '{print $3 "*"; }' >>  binlist.txt
+
+    if [ -d /opt/TianShan/bin/.debug ]; then
+        FILE="/opt/TianShan/bin/.debug/${i}*"
+        echo "$FILE" >>  binlist.txt
+        ldd /opt/TianShan/bin/${i}* | grep '=> /opt/TianShan/' |  awk -F '/' '{print $5 ; }' | awk '{print "/opt/TianShan/bin/.debug/" $1 "*"; }' >> binlist.txt
+    fi
 done
 
 for i in ${MODULEFILES} ; do 
@@ -35,3 +41,4 @@ tar xfvj ../ts.tar.bz2
 tar cfvj ../ts.tar.bz2 .
 cd ..; rm -rf aaa
  
+export BUILDNUM=$(basename $(realpath /opt/TianShan/bin/libZQCommon.so) | sed 's/^.*\.so[\.]*//g')
