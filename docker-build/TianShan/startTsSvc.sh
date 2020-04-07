@@ -29,5 +29,7 @@ cd /opt/TianShan/logs/crashdump
 export ASAN_OPTIONS="disable_coredump=0:unmap_shadow_on_exit=1:abort_on_error=1:symbolize=1"
 export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer
 
-/opt/TianShan/bin/${SVCBIN} -s ${SVCNAME} -i 0 -n ${HOSTNAME} -m 2>&1 |tee -a /opt/TianShan/logs/${SVCNAME}_stdout.log &
+CMD="/opt/TianShan/bin/${SVCBIN} -s ${SVCNAME} -i 0 -n ${HOSTNAME} -m"
+echo "$STAMP: $CMD" | tee -a /opt/TianShan/logs/${SVCNAME}_stdout.log
+${CMD}  2>&1 |tee -a /opt/TianShan/logs/${SVCNAME}_stdout.log &
 
