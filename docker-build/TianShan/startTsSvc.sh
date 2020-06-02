@@ -31,5 +31,5 @@ export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer
 
 CMD="/opt/TianShan/bin/${SVCBIN} -s ${SVCNAME} -i 0 -n ${HOSTNAME} -m"
 echo "$STAMP: $CMD" | tee -a /opt/TianShan/logs/${SVCNAME}_stdout.log
-${CMD}  2>&1 |tee -a /opt/TianShan/logs/${SVCNAME}_stdout.log &
+${CMD}  2>&1 |tee -a /opt/TianShan/logs/${SVCNAME}_stdout.log
 

@@ -7,7 +7,7 @@ echo > binlist.txt;
 for i in ${BINFILES} ; do
     FILE="/opt/TianShan/bin/${i}*"
     echo "$FILE" >>  binlist.txt
-    ldd $FILE | grep '=> /opt/TianShan' |  awk '{print $3 "*"; }' >>  binlist.txt
+    ldd $FILE | grep '=> /opt/TianShan' |  awk '{print $3 "*"; }' | awk -F "so" '{print $1 "*"; }' >>  binlist.txt
 
     if [ -d /opt/TianShan/bin/.debug ]; then
         FILE="/opt/TianShan/bin/.debug/${i}*"

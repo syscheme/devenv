@@ -1,5 +1,8 @@
 BUILDNUM :=$(shell basename $(shell realpath /opt/TianShan/bin/libZQCommon.so) | sed 's/^.*\.so[\.]*//g')
 BRANCHNUM:=$(shell echo ${BUILDNUM} | cut -d '.' -f 1,2)
+ifeq ($(BRANCHNUM),1.0)
+	BRANCHNUM:="_dbg"
+endif
 
 common: 
 	tar cfmvj common.tar.bz2 \
@@ -48,3 +51,11 @@ docker-idx: tsinstall
 	docker push repo.xor:5000/tianshan/indexsvc:v$(BUILDNUM)
 	docker push repo.xor:5000/tianshan/indexsvc:v$(BRANCHNUM)
 
+docker-nss: tsinstall
+	./build_tstar.sh "NSS" "NSS"
+	@echo version v$(BRANCHNUM), build $(BUILDNUM)
+	docker build -t syscheme/tianshan-nss -f TianShan-indexsvc.dkr .
+	docker tag syscheme/tianshan-nss:latest repo.xor:5000/tianshan/nss:v$(BUILDNUM)
+	docker tag repo.xor:5000/tianshan/nss:v$(BUILDNUM) repo.xor:5000/tianshan/nss:v$(BRANCHNUM)
+	docker push repo.xor:5000/tianshan/nss:v$(BUILDNUM)
+	docker push repo.xor:5000/tianshan/nss:v$(BRANCHNUM)
