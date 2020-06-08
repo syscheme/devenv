@@ -4,7 +4,7 @@
 SVCBIN=$1
 SVCNAME=$1
 
-STAMP=$(date +%j%H%M%S)
+STAMP=$(date +%m%dT%H%M%S)
 
 ETH0_IP=$(/sbin/ip address|grep 'scope global eth0'|awk '{print $2;}'|cut -d '/' -f 1)
 HOST_IP=$(/sbin/ip route|awk '{ print $3 }'|head -1)
