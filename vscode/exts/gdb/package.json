@@ -962,7 +962,7 @@
 		"publish": "vsce publish"
 	},
 	"dependencies": {
-		"ssh2": "^0.8.2",
+		"ssh2": "^1.4.0",
 		"vscode-debugadapter": "^1.16.0",
 		"vscode-debugprotocol": "^1.16.0"
 	},
